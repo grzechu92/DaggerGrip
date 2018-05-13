@@ -1,5 +1,6 @@
 package ch.grze.daggergripprocessor
 
+import com.squareup.kotlinpoet.FileSpec
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element
 import kotlin.reflect.KClass
@@ -11,15 +12,12 @@ abstract class AnnotationProcessor : Debuggable {
         const val PACKAGE_NAME = "daggergrip"
     }
 
-    lateinit var env: ProcessingEnvironment
+    override lateinit var environment: ProcessingEnvironment
 
-    override fun getEnvironment() = env
-
-    abstract fun process(elements: List<Element>)
+    abstract fun process(elements: List<Element>): List<FileSpec>
 
     abstract fun getAnnotation(): KClass<out Annotation>
 
-    protected fun getPath() = env
-        .options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-        ?.replace("build/generated/source/kaptKotlin/debug", "src/main/java")
+    protected fun getFile(fileName: String, packageName: String = PACKAGE_NAME)
+            = FileSpec.builder(packageName, fileName)
 }

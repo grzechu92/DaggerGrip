@@ -3,7 +3,6 @@ package ch.grze.daggergripprocessor
 import ch.grze.daggergripcommons.BindsTo
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
-import java.io.File
 import javax.lang.model.element.Element
 
 class BindsToAnnotationProcessor : AnnotationProcessor() {
@@ -14,39 +13,33 @@ class BindsToAnnotationProcessor : AnnotationProcessor() {
 
     override fun getAnnotation() = BindsTo::class
 
-    override fun process(elements: List<Element>) {
-        val typeBuilder = TypeSpec.classBuilder(CLASS_NAME)
-        val fileBuilder = FileSpec.builder(PACKAGE_NAME, CLASS_NAME)
-
-        typeBuilder.apply {
+    override fun process(elements: List<Element>): List<FileSpec> {
+        val typeBuilder = TypeSpec.classBuilder(CLASS_NAME).apply {
             addModifiers(KModifier.ABSTRACT)
             addAnnotation(DaggerClasses.MODULE)
+        }
 
-            elements.forEach { element ->
-                element.annotationMirrors
-                    .filter { it.annotationType.asElement().simpleName.contentEquals(getAnnotation().simpleName) }
-                    .forEach {
-                        it.elementValues.forEach { _, clazz ->
-                            val bindClass = ClassName.bestGuess(clazz.value.toString())
-                            val annotatedClass = element.asType().asTypeName()
-
-                            addFunction(
-                                FunSpec.builder("binds${bindClass.simpleName()}To${element.simpleName}")
-                                    .addAnnotation(DaggerClasses.BINDS)
-                                    .addModifiers(ABSTRACT)
-                                    .addParameter("binds", annotatedClass)
-                                    .returns(bindClass)
-                                    .build()
-                            )
+        elements.map { element ->
+            element.annotationMirrors
+                .filter { it.annotationType.asElement().simpleName.contentEquals(getAnnotation().simpleName) }
+                .flatMap { it.elementValues.entries }
+                .map { ClassName.bestGuess(it.value.value.toString()) }
+                .forEach {
+                    FunSpec.builder("binds${it.simpleName()}To${element.simpleName}")
+                        .addAnnotation(DaggerClasses.BINDS)
+                        .addModifiers(ABSTRACT)
+                        .addParameter("binds", element.asType().asTypeName())
+                        .returns(it)
+                        .build()
+                        .let {
+                            typeBuilder.addFunction(it)
                         }
-                    }
-            }
+                }
         }
 
-        fileBuilder.apply {
-            addType(typeBuilder.build())
-
-            build().writeTo(File(getPath()))
-        }
+        return getFile(CLASS_NAME)
+            .apply { addType(typeBuilder.build()) }
+            .build()
+            .let { listOf(it) }
     }
 }

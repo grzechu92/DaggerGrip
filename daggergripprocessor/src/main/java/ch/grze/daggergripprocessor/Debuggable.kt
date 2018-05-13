@@ -4,9 +4,9 @@ import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
 
 interface Debuggable {
-    fun getEnvironment(): ProcessingEnvironment
+    val environment: ProcessingEnvironment
 
     fun println(something: Any?) {
-        getEnvironment().messager.printMessage(Kind.NOTE, "=======> $something")
+        environment.messager.printMessage(Kind.NOTE, "=======> $something")
     }
 }
