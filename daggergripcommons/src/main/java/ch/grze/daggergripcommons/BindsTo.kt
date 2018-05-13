@@ -1,4 +1,4 @@
-package ch.grze.daggergripannotations
+package ch.grze.daggergripcommons
 
 import kotlin.reflect.KClass
 

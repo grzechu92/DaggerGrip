@@ -1,6 +1,6 @@
 package ch.grze.daggergrip.binds
 
-import ch.grze.daggergripannotations.BindsTo
+import ch.grze.daggergripcommons.BindsTo
 
 @BindsTo(SampleInterface::class)
 class SampleImplementation : SampleInterface

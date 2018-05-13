@@ -3,7 +3,7 @@ package ch.grze.daggergrip
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import ch.grze.daggergrip.binds.SampleInterface
-import ch.grze.daggergripannotations.InjectInActivity
+import ch.grze.daggergripcommons.InjectInActivity
 import dagger.android.AndroidInjection
 
 @InjectInActivity

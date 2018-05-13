@@ -28,7 +28,7 @@ android {
 
 
 dependencies {
-    api project(":daggergripannotations")
+    api project(':daggergripcommons')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin"
 
     implementation "com.android.support:appcompat-v7:$android_support"
