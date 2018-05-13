@@ -1,1 +1,1 @@
-include ':app', ':daggergrip', ':daggergripprocessor'
+include ':app', ':daggergrip', ':daggergripprocessor', ':daggergripannotations'

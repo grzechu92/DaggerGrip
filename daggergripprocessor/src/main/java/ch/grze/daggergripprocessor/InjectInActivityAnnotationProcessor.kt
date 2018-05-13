@@ -1,6 +1,6 @@
 package ch.grze.daggergripprocessor
 
-import ch.grze.daggergrip.InjectInActivity
+import ch.grze.daggergripannotations.InjectInActivity
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import java.io.File
