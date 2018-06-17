@@ -32,8 +32,17 @@ class InjectInActivityAnnotationProcessor : AnnotationProcessor() {
             addSuperinterface(genericInterface)
         }
 
-        PropertySpec.builder("injections", propertyType, OVERRIDE)
-            .initializer(CodeBlock.of("mapOf()"))
+        val injectionsBuilder = PropertySpec.builder("injections", propertyType, OVERRIDE)
+        val assignments: MutableList<CodeBlock> = mutableListOf()
+
+        elements
+            .map { elementAsClassName(it) to it.getAnnotation(getAnnotation().java).activityMethod }
+            .map { (className, injectMethod) ->
+                assignments.add(CodeBlock.of("%T::class to %T.%L", className, InjectInActivityMethod::class, injectMethod))
+            }
+
+        injectionsBuilder
+            .initializer(CodeBlock.of("mapOf(${assignments.joinToString(",")}) as %T", propertyType))
             .build()
             .let {
                 typeBuilder.addProperty(it)
@@ -50,7 +59,8 @@ class InjectInActivityAnnotationProcessor : AnnotationProcessor() {
             addAnnotation(DaggerClasses.MODULE)
         }
 
-        elements.map { ClassName.bestGuess(it.asType().asTypeName().toString()) }
+        elements
+            .map { elementAsClassName(it) }
             .map {
                 FunSpec.builder("contributes${it.simpleName()}")
                     .addAnnotation(DaggerClasses.CONTRIBUTES_ANDROID_INJECTOR)

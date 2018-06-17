@@ -1,6 +1,8 @@
 package ch.grze.daggergripprocessor
 
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.asTypeName
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element
 import kotlin.reflect.KClass
@@ -20,4 +22,7 @@ abstract class AnnotationProcessor : Debuggable {
 
     protected fun getFile(fileName: String, packageName: String = PACKAGE_NAME)
             = FileSpec.builder(packageName, fileName)
+
+    protected fun elementAsClassName(element: Element)
+            = ClassName.bestGuess(element.asType().asTypeName().toString())
 }
