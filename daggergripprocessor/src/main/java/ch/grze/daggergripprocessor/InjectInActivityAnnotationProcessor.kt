@@ -1,8 +1,9 @@
 package ch.grze.daggergripprocessor
 
+import ch.grze.daggergripcommons.ActivityInjectionsMapProvider
+import ch.grze.daggergripcommons.BindsTo
 import ch.grze.daggergripcommons.InjectInActivity
 import ch.grze.daggergripcommons.InjectInActivityMethod
-import ch.grze.daggergripcommons.InjectionsMap
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
@@ -24,28 +25,38 @@ class InjectInActivityAnnotationProcessor : AnnotationProcessor() {
     )
 
     private fun generateInjectionsMapFile(elements: List<Element>): FileSpec {
-        val genericInterface = ParameterizedTypeName.get(InjectionsMap::class, InjectInActivityMethod::class)
         val classOfAny = ParameterizedTypeName.get(KClass::class, Any::class)
         val propertyType = ParameterizedTypeName.get(Map::class.asTypeName(), classOfAny, InjectInActivityMethod::class.asTypeName())
 
         val typeBuilder = TypeSpec.classBuilder(INJECTIONS_CLASS_NAME).apply {
-            addSuperinterface(genericInterface)
+            addSuperinterface(ActivityInjectionsMapProvider::class)
         }
 
-        val injectionsBuilder = PropertySpec.builder("injections", propertyType, OVERRIDE)
-        val assignments: MutableList<CodeBlock> = mutableListOf()
+        AnnotationSpec.builder(BindsTo::class)
+            .addMember(CodeBlock.of("%T::class", ActivityInjectionsMapProvider::class))
+            .build()
+            .let {
+                typeBuilder.addAnnotation(it)
+            }
+
+        FunSpec.constructorBuilder()
+            .addAnnotation(DaggerClasses.INJECT)
+            .build()
+            .let {
+                typeBuilder.primaryConstructor(it)
+            }
 
         elements
             .map { elementAsClassName(it) to it.getAnnotation(getAnnotation().java).activityMethod }
             .map { (className, injectMethod) ->
-                assignments.add(CodeBlock.of("%T::class to %T.%L", className, InjectInActivityMethod::class, injectMethod))
-            }
-
-        injectionsBuilder
-            .initializer(CodeBlock.of("mapOf(${assignments.joinToString(",")}) as %T", propertyType))
-            .build()
-            .let {
-                typeBuilder.addProperty(it)
+                CodeBlock.of("%T::class to %T.%L", className, InjectInActivityMethod::class, injectMethod)
+            }.let {
+                PropertySpec.builder("injections", propertyType, OVERRIDE)
+                    .initializer(CodeBlock.of("mapOf(${it.joinToString(",")}) as %T", propertyType))
+                    .build()
+                    .let {
+                        typeBuilder.addProperty(it)
+                    }
             }
 
         return getFile(INJECTIONS_CLASS_NAME)

@@ -1,12 +1,8 @@
 package ch.grze.daggergrip
 
-import ch.grze.daggergripcommons.InjectInActivityMethod
-import ch.grze.daggergripcommons.InjectionsMap
+class DaggerGrip(application: DaggerGripApplication) {
 
-class DaggerGrip(application: DaggerGripApplication,
-                 activityInjectionsMap: InjectionsMap<InjectInActivityMethod>) {
-
-    private val activityLifecycleManager = ActivityLifecycleManager(activityInjectionsMap)
+    private val activityLifecycleManager = ActivityLifecycleManager(application.activityInjectionsMap())
 
     init {
         application.registerActivityLifecycleCallbacks(activityLifecycleManager)

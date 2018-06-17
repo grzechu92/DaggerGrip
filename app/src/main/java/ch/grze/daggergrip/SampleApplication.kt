@@ -14,6 +14,6 @@ class SampleApplication : Application(), DaggerGripApplication {
             .build()
             .inject(this)
 
-        DaggerGrip(this, ActivityInjectionsMap())
+        DaggerGrip(this)
     }
 }

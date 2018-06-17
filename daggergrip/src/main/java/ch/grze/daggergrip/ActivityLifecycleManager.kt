@@ -3,12 +3,12 @@ package ch.grze.daggergrip
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Bundle
+import ch.grze.daggergripcommons.ActivityInjectionsMapProvider
 import ch.grze.daggergripcommons.InjectInActivityMethod
 import ch.grze.daggergripcommons.InjectInActivityMethod.*
-import ch.grze.daggergripcommons.InjectionsMap
 import dagger.android.AndroidInjection
 
-class ActivityLifecycleManager(private val injectionsMap: InjectionsMap<InjectInActivityMethod>) : ActivityLifecycleCallbacks {
+class ActivityLifecycleManager(private val injectionsMap: ActivityInjectionsMapProvider) : ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         injectIfMethodMatching(activity, ON_CREATE)

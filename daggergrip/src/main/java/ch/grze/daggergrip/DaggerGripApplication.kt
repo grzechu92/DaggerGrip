@@ -3,6 +3,7 @@ package ch.grze.daggergrip
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
 import android.app.Fragment
+import ch.grze.daggergripcommons.ActivityInjectionsMapProvider
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasFragmentInjector
@@ -10,8 +11,9 @@ import javax.inject.Inject
 
 interface DaggerGripApplication : HasActivityInjector, HasFragmentInjector {
     companion object {
-        private var activityInjector: DispatchingAndroidInjector<Activity>? = null
-        private var fragmentInjector: DispatchingAndroidInjector<Fragment>? = null
+        private lateinit var activityInjector: DispatchingAndroidInjector<Activity>
+        private lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+        private lateinit var activityInjectionsMap: ActivityInjectionsMapProvider
     }
 
     @Inject
@@ -24,9 +26,16 @@ interface DaggerGripApplication : HasActivityInjector, HasFragmentInjector {
         fragmentInjector = injector
     }
 
-    override fun activityInjector() = activityInjector!!
+    @Inject
+    fun setActivityInjectionsMap(map: ActivityInjectionsMapProvider) {
+        activityInjectionsMap = map
+    }
 
-    override fun fragmentInjector() = fragmentInjector!!
+    override fun activityInjector() = activityInjector
+
+    override fun fragmentInjector() = fragmentInjector
+
+    fun activityInjectionsMap() = activityInjectionsMap
 
     fun registerActivityLifecycleCallbacks(callback: ActivityLifecycleCallbacks)
 }
