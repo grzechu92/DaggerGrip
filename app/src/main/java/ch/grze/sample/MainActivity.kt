@@ -1,9 +1,9 @@
-package ch.grze.daggergrip
+package ch.grze.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import ch.grze.daggergrip.binds.SampleInterface
-import ch.grze.daggergrip.binds.SampleInterface2
+import ch.grze.sample.binds.SampleInterface
+import ch.grze.sample.binds.SampleInterface2
 import ch.grze.daggergripcommons.InjectInActivity
 import javax.inject.Inject
 

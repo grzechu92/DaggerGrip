@@ -11,5 +11,5 @@ import kotlin.reflect.KClass
 @BindsTo(ActivityInjectionsMapProvider::class)
 class ActivityInjectionsMap @Inject constructor() : ActivityInjectionsMapProvider {
     override val injections: Map<KClass<Any>, InjectInActivityMethod> =
-            mapOf(ch.grze.daggergrip.MainActivity::class to ch.grze.daggergripcommons.InjectInActivityMethod.ON_CREATE) as Map<KClass<Any>, InjectInActivityMethod>
+            mapOf(ch.grze.sample.MainActivity::class to ch.grze.daggergripcommons.InjectInActivityMethod.ON_CREATE) as Map<KClass<Any>, InjectInActivityMethod>
 }

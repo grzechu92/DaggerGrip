@@ -1,6 +1,6 @@
-package ch.grze.daggergrip.di
+package ch.grze.sample.di
 
-import ch.grze.daggergrip.SampleApplication
+import ch.grze.sample.SampleApplication
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.support.AndroidSupportInjectionModule

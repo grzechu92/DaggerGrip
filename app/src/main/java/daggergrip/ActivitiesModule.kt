@@ -1,6 +1,6 @@
 package daggergrip
 
-import ch.grze.daggergrip.MainActivity
+import ch.grze.sample.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

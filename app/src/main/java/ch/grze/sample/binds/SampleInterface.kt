@@ -1,4 +1,4 @@
-package ch.grze.daggergrip.binds
+package ch.grze.sample.binds
 
 interface SampleInterface {
     fun doSomething()

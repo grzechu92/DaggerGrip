@@ -1,10 +1,10 @@
 package daggergrip
 
-import ch.grze.daggergrip.binds.SampleImplementation
-import ch.grze.daggergrip.binds.SampleImplementation2
-import ch.grze.daggergrip.binds.SampleInterface
-import ch.grze.daggergrip.binds.SampleInterface2
 import ch.grze.daggergripcommons.ActivityInjectionsMapProvider
+import ch.grze.sample.binds.SampleImplementation
+import ch.grze.sample.binds.SampleImplementation2
+import ch.grze.sample.binds.SampleInterface
+import ch.grze.sample.binds.SampleInterface2
 import dagger.Binds
 import dagger.Module
 
