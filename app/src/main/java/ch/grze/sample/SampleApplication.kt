@@ -10,10 +10,7 @@ class SampleApplication : Application(), DaggerGripApplication {
     override fun onCreate() {
         super.onCreate()
 
-        DaggerAppComponent
-            .builder()
-            .build()
-            .inject(this)
+        DaggerAppComponent.create().inject(this)
 
         DaggerGrip(this)
     }

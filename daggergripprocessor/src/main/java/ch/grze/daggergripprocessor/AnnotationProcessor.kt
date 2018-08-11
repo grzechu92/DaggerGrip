@@ -20,9 +20,9 @@ abstract class AnnotationProcessor : Debuggable {
 
     abstract fun getAnnotation(): KClass<out Annotation>
 
-    protected fun getFile(fileName: String, packageName: String = PACKAGE_NAME)
-            = FileSpec.builder(packageName, fileName)
+    protected fun getFile(fileName: String, packageName: String = PACKAGE_NAME) =
+        FileSpec.builder(packageName, fileName)
 
-    protected fun elementAsClassName(element: Element)
-            = ClassName.bestGuess(element.asType().asTypeName().toString())
+    protected fun elementAsClassName(element: Element) =
+        ClassName.bestGuess(element.asType().asTypeName().toString())
 }

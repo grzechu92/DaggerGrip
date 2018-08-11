@@ -2,17 +2,9 @@ package ch.grze.sample.di
 
 import ch.grze.sample.SampleApplication
 import dagger.Component
-import dagger.android.AndroidInjectionModule
-import dagger.android.support.AndroidSupportInjectionModule
-import daggergrip.ActivitiesModule
-import daggergrip.BindsModule
+import daggergrip.DaggerGripModule
 
-@Component(modules = [
-    AndroidInjectionModule::class,
-    AndroidSupportInjectionModule::class,
-    ActivitiesModule::class,
-    BindsModule::class
-])
+@Component(modules = [DaggerGripModule::class])
 interface AppComponent {
     fun inject(application: SampleApplication)
 }

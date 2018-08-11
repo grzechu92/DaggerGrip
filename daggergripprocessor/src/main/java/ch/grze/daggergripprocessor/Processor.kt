@@ -22,6 +22,8 @@ class Processor : AbstractProcessor() {
     private val annotatedClasses: MutableMap<ClassName, MutableList<Element>> = mutableMapOf()
 
     override fun process(types: MutableSet<out TypeElement>?, env: RoundEnvironment?): Boolean {
+        var isAnythingChanged = false
+
         types
             ?.map { it to env?.getElementsAnnotatedWith(it) }
             ?.map { (annotation, elements) ->
@@ -41,21 +43,28 @@ class Processor : AbstractProcessor() {
             .map { it to ClassName.bestGuess(it.getAnnotation().qualifiedName!!) }
             .map { (processor, annotation) ->
                 annotatedClasses[annotation]?.let {
-                    processor.process(it)
-                        .map { it.writeTo(File(getPath())) }
+                    processor
+                        .process(it)
+                        .map {
+                            it.writeTo(File(getPath()))
+                            isAnythingChanged = true
+                        }
                 }
             }
 
-        return true
+        return isAnythingChanged
     }
 
-    override fun getSupportedAnnotationTypes() = processors
-        .map { it.getAnnotation().qualifiedName }
-        .toMutableSet()
+    override fun getSupportedAnnotationTypes() =
+        processors
+            .map { it.getAnnotation().qualifiedName }
+            .toMutableSet()
 
     override fun getSupportedSourceVersion() = SourceVersion.latest()
 
-    private fun getPath() = processingEnv
-        .options[AnnotationProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME]
-        ?.replace("build/generated/source/kaptKotlin/debug", "src/main/java")
+    private fun getPath() =
+        processingEnv
+            .options[AnnotationProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME]
+            ?.replace("build/generated/source/kaptKotlin/debug", "src/main/java")
+//            ?.replace("kaptKotlin", "kapt")
 }

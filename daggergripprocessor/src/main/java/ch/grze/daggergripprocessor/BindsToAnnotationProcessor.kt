@@ -25,7 +25,7 @@ class BindsToAnnotationProcessor : AnnotationProcessor() {
                 .flatMap { it.elementValues.entries }
                 .map { ClassName.bestGuess(it.value.value.toString()) }
                 .forEach {
-                    FunSpec.builder("binds${it.simpleName()}To${element.simpleName}")
+                    FunSpec.builder("binds${it.simpleName}To${element.simpleName}")
                         .addAnnotation(DaggerClasses.BINDS)
                         .addModifiers(ABSTRACT)
                         .addParameter("binds", element.asType().asTypeName())

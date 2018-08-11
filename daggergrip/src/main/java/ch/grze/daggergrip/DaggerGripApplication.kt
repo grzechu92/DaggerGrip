@@ -16,6 +16,10 @@ interface DaggerGripApplication : HasActivityInjector, HasFragmentInjector {
         private lateinit var activityInjectionsMap: ActivityInjectionsMapProvider
     }
 
+    override fun activityInjector() = activityInjector
+
+    override fun fragmentInjector() = fragmentInjector
+
     @Inject
     fun setActivityDispatchingAndroidInjector(injector: DispatchingAndroidInjector<Activity>) {
         activityInjector = injector
@@ -30,10 +34,6 @@ interface DaggerGripApplication : HasActivityInjector, HasFragmentInjector {
     fun setActivityInjectionsMap(map: ActivityInjectionsMapProvider) {
         activityInjectionsMap = map
     }
-
-    override fun activityInjector() = activityInjector
-
-    override fun fragmentInjector() = fragmentInjector
 
     fun activityInjectionsMap() = activityInjectionsMap
 

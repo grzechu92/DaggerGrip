@@ -9,6 +9,7 @@ import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import javax.lang.model.element.Element
 import kotlin.reflect.KClass
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 class InjectInActivityAnnotationProcessor : AnnotationProcessor() {
 
@@ -25,8 +26,8 @@ class InjectInActivityAnnotationProcessor : AnnotationProcessor() {
     )
 
     private fun generateInjectionsMapFile(elements: List<Element>): FileSpec {
-        val classOfAny = ParameterizedTypeName.get(KClass::class, Any::class)
-        val propertyType = ParameterizedTypeName.get(Map::class.asTypeName(), classOfAny, InjectInActivityMethod::class.asTypeName())
+        val classOfAny = KClass::class.asClassName().parameterizedBy(Any::class.asClassName())
+        val propertyType = Map::class.asClassName().parameterizedBy(classOfAny, InjectInActivityMethod::class.asClassName())
 
         val typeBuilder = TypeSpec.classBuilder(INJECTIONS_CLASS_NAME).apply {
             addSuperinterface(ActivityInjectionsMapProvider::class)
@@ -73,7 +74,7 @@ class InjectInActivityAnnotationProcessor : AnnotationProcessor() {
         elements
             .map { elementAsClassName(it) }
             .map {
-                FunSpec.builder("contributes${it.simpleName()}")
+                FunSpec.builder("contributes${it.simpleName}")
                     .addAnnotation(DaggerClasses.CONTRIBUTES_ANDROID_INJECTOR)
                     .addModifiers(ABSTRACT)
                     .returns(it)
