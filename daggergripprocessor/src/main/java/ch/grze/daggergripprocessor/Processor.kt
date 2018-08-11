@@ -1,5 +1,8 @@
 package ch.grze.daggergripprocessor
 
+import ch.grze.daggergripprocessor.parser.AnnotationParser
+import ch.grze.daggergripprocessor.parser.BindsToParser
+import ch.grze.daggergripprocessor.parser.InjectInActivityParser
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.asClassName
@@ -14,9 +17,14 @@ import javax.lang.model.element.TypeElement
 @AutoService(Processor::class)
 class Processor : AbstractProcessor() {
 
-    private val processors: List<AnnotationProcessor> = listOf(
-        BindsToAnnotationProcessor(),
-        InjectInActivityAnnotationProcessor()
+    companion object {
+        const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
+        const val PACKAGE_NAME = "daggergrip"
+    }
+
+    private val parsers: List<AnnotationParser> = listOf(
+        BindsToParser(),
+        InjectInActivityParser()
     )
 
     private val annotatedClasses: MutableMap<ClassName, MutableList<Element>> = mutableMapOf()
@@ -38,13 +46,13 @@ class Processor : AbstractProcessor() {
                 }
             }
 
-        processors
+        parsers
             .map { it.apply { environment = processingEnv } }
             .map { it to ClassName.bestGuess(it.getAnnotation().qualifiedName!!) }
             .map { (processor, annotation) ->
                 annotatedClasses[annotation]?.let {
                     processor
-                        .process(it)
+                        .parse(it)
                         .map {
                             it.writeTo(File(getPath()))
                             isAnythingChanged = true
@@ -56,7 +64,7 @@ class Processor : AbstractProcessor() {
     }
 
     override fun getSupportedAnnotationTypes() =
-        processors
+        parsers
             .map { it.getAnnotation().qualifiedName }
             .toMutableSet()
 
@@ -64,7 +72,7 @@ class Processor : AbstractProcessor() {
 
     private fun getPath() =
         processingEnv
-            .options[AnnotationProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME]
+            .options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
             ?.replace("build/generated/source/kaptKotlin/debug", "src/main/java")
 //            ?.replace("kaptKotlin", "kapt")
 }

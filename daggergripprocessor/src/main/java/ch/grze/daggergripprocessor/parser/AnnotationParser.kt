@@ -1,5 +1,7 @@
-package ch.grze.daggergripprocessor
+package ch.grze.daggergripprocessor.parser
 
+import ch.grze.daggergripprocessor.Debuggable
+import ch.grze.daggergripprocessor.Processor
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.asTypeName
@@ -7,20 +9,15 @@ import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element
 import kotlin.reflect.KClass
 
-abstract class AnnotationProcessor : Debuggable {
-
-    companion object {
-        const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
-        const val PACKAGE_NAME = "daggergrip"
-    }
+abstract class AnnotationParser : Debuggable {
 
     override lateinit var environment: ProcessingEnvironment
 
-    abstract fun process(elements: List<Element>): List<FileSpec>
+    abstract fun parse(elements: List<Element>): List<FileSpec>
 
     abstract fun getAnnotation(): KClass<out Annotation>
 
-    protected fun getFile(fileName: String, packageName: String = PACKAGE_NAME) =
+    protected fun getFile(fileName: String, packageName: String = Processor.PACKAGE_NAME) =
         FileSpec.builder(packageName, fileName)
 
     protected fun elementAsClassName(element: Element) =

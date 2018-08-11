@@ -1,9 +1,10 @@
-package ch.grze.daggergripprocessor
+package ch.grze.daggergripprocessor.parser
 
 import ch.grze.daggergripcommons.ActivityInjectionsMapProvider
 import ch.grze.daggergripcommons.BindsTo
 import ch.grze.daggergripcommons.InjectInActivity
 import ch.grze.daggergripcommons.InjectInActivityMethod
+import ch.grze.daggergripprocessor.DaggerClasses
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
@@ -11,7 +12,7 @@ import javax.lang.model.element.Element
 import kotlin.reflect.KClass
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
-class InjectInActivityAnnotationProcessor : AnnotationProcessor() {
+class InjectInActivityParser : AnnotationParser() {
 
     companion object {
         const val MODULE_CLASS_NAME = "ActivitiesModule"
@@ -20,7 +21,7 @@ class InjectInActivityAnnotationProcessor : AnnotationProcessor() {
 
     override fun getAnnotation() = InjectInActivity::class
 
-    override fun process(elements: List<Element>) = listOf(
+    override fun parse(elements: List<Element>) = listOf(
         generateModuleFile(elements),
         generateInjectionsMapFile(elements)
     )

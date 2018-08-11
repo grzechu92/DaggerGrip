@@ -1,11 +1,12 @@
-package ch.grze.daggergripprocessor
+package ch.grze.daggergripprocessor.parser
 
 import ch.grze.daggergripcommons.BindsTo
+import ch.grze.daggergripprocessor.DaggerClasses
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import javax.lang.model.element.Element
 
-class BindsToAnnotationProcessor : AnnotationProcessor() {
+class BindsToParser : AnnotationParser() {
 
     companion object {
         const val CLASS_NAME = "BindsModule"
@@ -13,7 +14,7 @@ class BindsToAnnotationProcessor : AnnotationProcessor() {
 
     override fun getAnnotation() = BindsTo::class
 
-    override fun process(elements: List<Element>): List<FileSpec> {
+    override fun parse(elements: List<Element>): List<FileSpec> {
         val typeBuilder = TypeSpec.classBuilder(CLASS_NAME).apply {
             addModifiers(KModifier.ABSTRACT)
             addAnnotation(DaggerClasses.MODULE)
