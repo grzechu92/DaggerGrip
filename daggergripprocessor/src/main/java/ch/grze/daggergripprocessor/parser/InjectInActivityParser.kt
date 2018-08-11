@@ -4,7 +4,7 @@ import ch.grze.daggergripcommons.ActivityInjectionsMapProvider
 import ch.grze.daggergripcommons.BindsTo
 import ch.grze.daggergripcommons.InjectInActivity
 import ch.grze.daggergripcommons.InjectInActivityMethod
-import ch.grze.daggergripprocessor.DaggerClasses
+import ch.grze.daggergripprocessor.Classes
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
@@ -42,7 +42,7 @@ class InjectInActivityParser : AnnotationParser() {
             }
 
         FunSpec.constructorBuilder()
-            .addAnnotation(DaggerClasses.INJECT)
+            .addAnnotation(Classes.INJECT)
             .build()
             .let {
                 typeBuilder.primaryConstructor(it)
@@ -69,14 +69,14 @@ class InjectInActivityParser : AnnotationParser() {
     private fun generateModuleFile(elements: List<Element>): FileSpec {
         val typeBuilder = TypeSpec.classBuilder(MODULE_CLASS_NAME).apply {
             addModifiers(ABSTRACT)
-            addAnnotation(DaggerClasses.MODULE)
+            addAnnotation(Classes.MODULE)
         }
 
         elements
             .map { elementAsClassName(it) }
             .map {
                 FunSpec.builder("contributes${it.simpleName}")
-                    .addAnnotation(DaggerClasses.CONTRIBUTES_ANDROID_INJECTOR)
+                    .addAnnotation(Classes.CONTRIBUTES_ANDROID_INJECTOR)
                     .addModifiers(ABSTRACT)
                     .returns(it)
                     .build()

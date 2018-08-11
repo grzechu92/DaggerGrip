@@ -1,5 +1,7 @@
 package ch.grze.daggergripprocessor
 
+import ch.grze.daggergripprocessor.generator.DaggerGripModuleGenerator
+import ch.grze.daggergripprocessor.generator.Generator
 import ch.grze.daggergripprocessor.parser.AnnotationParser
 import ch.grze.daggergripprocessor.parser.BindsToParser
 import ch.grze.daggergripprocessor.parser.InjectInActivityParser
@@ -21,6 +23,10 @@ class Processor : AbstractProcessor() {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
         const val PACKAGE_NAME = "daggergrip"
     }
+
+    private val generators: List<Generator> = listOf(
+        DaggerGripModuleGenerator()
+    )
 
     private val parsers: List<AnnotationParser> = listOf(
         BindsToParser(),
@@ -58,6 +64,14 @@ class Processor : AbstractProcessor() {
                             isAnythingChanged = true
                         }
                 }
+            }
+
+        generators
+            .map { it.apply { environment = processingEnv } }
+            .flatMap { it.generate() }
+            .map {
+                it.writeTo(File(getPath()))
+                isAnythingChanged = true
             }
 
         return isAnythingChanged

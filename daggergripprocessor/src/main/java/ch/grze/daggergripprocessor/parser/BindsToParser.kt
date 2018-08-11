@@ -1,7 +1,7 @@
 package ch.grze.daggergripprocessor.parser
 
 import ch.grze.daggergripcommons.BindsTo
-import ch.grze.daggergripprocessor.DaggerClasses
+import ch.grze.daggergripprocessor.Classes
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import javax.lang.model.element.Element
@@ -17,7 +17,7 @@ class BindsToParser : AnnotationParser() {
     override fun parse(elements: List<Element>): List<FileSpec> {
         val typeBuilder = TypeSpec.classBuilder(CLASS_NAME).apply {
             addModifiers(KModifier.ABSTRACT)
-            addAnnotation(DaggerClasses.MODULE)
+            addAnnotation(Classes.MODULE)
         }
 
         elements.map { element ->
@@ -27,7 +27,7 @@ class BindsToParser : AnnotationParser() {
                 .map { ClassName.bestGuess(it.value.value.toString()) }
                 .forEach {
                     FunSpec.builder("binds${it.simpleName}To${element.simpleName}")
-                        .addAnnotation(DaggerClasses.BINDS)
+                        .addAnnotation(Classes.BINDS)
                         .addModifiers(ABSTRACT)
                         .addParameter("binds", element.asType().asTypeName())
                         .returns(it)
