@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion sdk_version.toInteger()
@@ -26,10 +25,9 @@ android {
     }
 }
 
-
 dependencies {
-    api project(':daggergripcommons')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin"
+    api project(":daggergripcommons")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin"
 
     implementation "com.android.support:appcompat-v7:$android_support"
     implementation "com.google.dagger:dagger:$dagger"

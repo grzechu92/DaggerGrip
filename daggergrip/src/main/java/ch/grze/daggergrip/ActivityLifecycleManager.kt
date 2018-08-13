@@ -34,6 +34,6 @@ class ActivityLifecycleManager(private val injectionsMap: ActivityInjectionsMapP
         injectionsMap.injections
             .filterKeys { it == activity::class }
             .filterValues { it == method }
-            .map { AndroidInjection.inject(activity) }
+            .let { AndroidInjection.inject(activity) }
     }
 }

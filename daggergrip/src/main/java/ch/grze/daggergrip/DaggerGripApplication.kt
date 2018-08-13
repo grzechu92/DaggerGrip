@@ -2,17 +2,19 @@ package ch.grze.daggergrip
 
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
-import android.app.Fragment
+import android.support.v4.app.Fragment
 import ch.grze.daggergripcommons.ActivityInjectionsMapProvider
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasFragmentInjector
+import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-interface DaggerGripApplication : HasActivityInjector, HasFragmentInjector {
+interface DaggerGripApplication : HasActivityInjector, HasFragmentInjector, HasSupportFragmentInjector {
     companion object {
         private lateinit var activityInjector: DispatchingAndroidInjector<Activity>
-        private lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+        private lateinit var fragmentInjector: DispatchingAndroidInjector<android.app.Fragment>
+        private lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
         private lateinit var activityInjectionsMap: ActivityInjectionsMapProvider
     }
 
@@ -20,14 +22,21 @@ interface DaggerGripApplication : HasActivityInjector, HasFragmentInjector {
 
     override fun fragmentInjector() = fragmentInjector
 
+    override fun supportFragmentInjector() = supportFragmentInjector
+
     @Inject
     fun setActivityDispatchingAndroidInjector(injector: DispatchingAndroidInjector<Activity>) {
         activityInjector = injector
     }
 
     @Inject
-    fun setFragmentDispatchingAndroidInjector(injector: DispatchingAndroidInjector<Fragment>) {
+    fun setFragmentDispatchingAndroidInjector(injector: DispatchingAndroidInjector<android.app.Fragment>) {
         fragmentInjector = injector
+    }
+
+    @Inject
+    fun setSupportFragmentDispatchingAndroidInjector(injector: DispatchingAndroidInjector<Fragment>) {
+        supportFragmentInjector = injector
     }
 
     @Inject

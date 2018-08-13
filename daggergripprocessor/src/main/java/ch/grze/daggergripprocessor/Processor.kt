@@ -36,8 +36,6 @@ class Processor : AbstractProcessor() {
     private val annotatedClasses: MutableMap<ClassName, MutableList<Element>> = mutableMapOf()
 
     override fun process(types: MutableSet<out TypeElement>?, env: RoundEnvironment?): Boolean {
-        var isAnythingChanged = false
-
         types
             ?.map { it to env?.getElementsAnnotatedWith(it) }
             ?.map { (annotation, elements) ->
@@ -59,22 +57,17 @@ class Processor : AbstractProcessor() {
                 annotatedClasses[annotation]?.let {
                     processor
                         .parse(it)
-                        .map {
-                            it.writeTo(File(getPath()))
-                            isAnythingChanged = true
-                        }
+                        .map { it.writeTo(File(getPath())) }
                 }
             }
 
         generators
             .map { it.apply { environment = processingEnv } }
             .flatMap { it.generate() }
-            .map {
-                it.writeTo(File(getPath()))
-                isAnythingChanged = true
-            }
+            .map { it.writeTo(File(getPath())) }
 
-        return isAnythingChanged
+
+        return true
     }
 
     override fun getSupportedAnnotationTypes() =

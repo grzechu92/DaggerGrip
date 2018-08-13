@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'idea'
 
 android {
     compileSdkVersion sdk_version.toInteger()
@@ -34,10 +35,10 @@ android {
 }
 
 dependencies {
-    kapt project(":daggergripprocessor")
     implementation project(":daggergrip")
+    kapt project(":daggergripprocessor")
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin"
 
     implementation "com.android.support:appcompat-v7:$android_support"
     implementation "com.google.dagger:dagger:$dagger"
